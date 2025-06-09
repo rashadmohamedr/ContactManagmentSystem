@@ -1,34 +1,38 @@
 #include "include/Contact.h"
 #include <string>
 using namespace std;
-Contact::Contact(string &name, string &email, string &phone)
-    : name(name), email(email), phone(phone) {}
-string Contact::getName() 
+Contact::Contact(string name, string email, string phone,int ID)
+        : name(name), email(email), phone(phone), ID(ID) {};
+string Contact::getName() const
 {
     return name;
 }
 
-string Contact::getEmail() 
+string Contact::getEmail () const
 {
     return email;
 }
 
-string Contact::getPhone() 
+string Contact::getPhone( ) const
+{
+    return phone;
+}
+string Contact::getID( ) const
 {
     return phone;
 }
 
-void Contact::setName(string &newName)
+void Contact::setName(string newName)
 {
     name = newName;
 }
 
-void Contact::setEmail(string &newEmail)
+void Contact::setEmail(string newEmail)
 {
     email = newEmail;
 }
 
-void Contact::setPhone(string &newPhone)
+void Contact::setPhone(string newPhone)
 {
     phone = newPhone;
 }

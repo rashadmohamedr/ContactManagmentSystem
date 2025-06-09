@@ -1,8 +1,15 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"vector": "cpp",
+			"iosfwd": "cpp",
+			"algorithm": "cpp",
+			"new": "cpp"
+		}
+	}
 }
