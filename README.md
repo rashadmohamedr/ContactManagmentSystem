@@ -1,3 +1,4 @@
+https://grok.com/share/c2hhcmQtMg%3D%3D_0abc2717-e8da-42b6-8fb7-6c8aa16292ac
 Creating a Contact Management System using the Qt GUI library in C++ is a great way to apply object-oriented programming (OOP), dynamic memory management, error handling, and logging. Below is a detailed guide to help you design and implement this project without providing actual C++ code, as requested. The guide covers the project structure, file organization, UML diagram, and step-by-step instructions to ensure clarity and completeness.
 
 ### Project Overview
