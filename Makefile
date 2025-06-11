@@ -16,7 +16,7 @@ CC            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefau
 CXX           = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 DEFINES       = -DQT_COMPILER_SUPPORTS_SSE2 -DQT_COMPILER_SUPPORTS_NEON -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.13 -Wall -Wextra -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -stdlib=libc++ -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.13 -Wall -Wextra -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -stdlib=libc++ -O2 -std=gnu++1z $(EXPORT_ARCH_ARGS) -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.13 -Wall -Wextra -fPIC $(DEFINES)
 INCPATH       = -I. -I../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers -I../../../Qt/5.15.19/macos/lib/QtGui.framework/Headers -I../../../Qt/5.15.19/macos/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/System/Library/Frameworks/AGL.framework/Headers -I../../../Qt/5.15.19/macos/mkspecs/macx-clang -F/Users/a/Qt/5.15.19/macos/lib
 QMAKE         = /Users/a/Qt/5.15.19/macos/bin/qmake
 DEL_FILE      = rm -f
@@ -53,20 +53,24 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = src/main.cpp \
-		src/Contact.cpp \
+		w \
 		src/ContactManager.cpp \
 		src/FileHandler.cpp \
 		src/Logger.cpp \
 		src/MainWindow.cpp \
-		src/ContactDialog.cpp moc_MainWindow.cpp
+		src/ContactDialog.cpp qrc_resources.cpp \
+		moc_MainWindow.cpp \
+		moc_ContactDialog.cpp
 OBJECTS       = main.o \
-		Contact.o \
+		w.o \
 		ContactManager.o \
 		FileHandler.o \
 		Logger.o \
 		MainWindow.o \
 		ContactDialog.o \
-		moc_MainWindow.o
+		qrc_resources.o \
+		moc_MainWindow.o \
+		moc_ContactDialog.o
 DIST          = ../../../Qt/5.15.19/macos/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.15.19/macos/mkspecs/qdevice.pri \
 		../../../Qt/5.15.19/macos/mkspecs/features/device_config.prf \
@@ -252,7 +256,7 @@ DIST          = ../../../Qt/5.15.19/macos/mkspecs/features/spec_pre.prf \
 		include/Logger.h \
 		include/MainWindow.h \
 		include/ContactDialog.h src/main.cpp \
-		src/Contact.cpp \
+		w \
 		src/ContactManager.cpp \
 		src/FileHandler.cpp \
 		src/Logger.cpp \
@@ -462,6 +466,7 @@ Makefile: ContactManagementSystem.pro ../../../Qt/5.15.19/macos/mkspecs/macx-cla
 		../../../Qt/5.15.19/macos/mkspecs/features/yacc.prf \
 		../../../Qt/5.15.19/macos/mkspecs/features/lex.prf \
 		ContactManagementSystem.pro \
+		resources.qrc \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl \
 		../../../Qt/5.15.19/macos/lib/QtGui.framework/Resources/QtGui.prl \
 		../../../Qt/5.15.19/macos/lib/QtCore.framework/Resources/QtCore.prl
@@ -646,6 +651,7 @@ Makefile: ContactManagementSystem.pro ../../../Qt/5.15.19/macos/mkspecs/macx-cla
 ../../../Qt/5.15.19/macos/mkspecs/features/yacc.prf:
 ../../../Qt/5.15.19/macos/mkspecs/features/lex.prf:
 ContactManagementSystem.pro:
+resources.qrc:
 ../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl:
 ../../../Qt/5.15.19/macos/lib/QtGui.framework/Resources/QtGui.prl:
 ../../../Qt/5.15.19/macos/lib/QtCore.framework/Resources/QtCore.prl:
@@ -678,8 +684,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents include/Contact.h include/ContactManager.h include/FileHandler.h include/Logger.h include/MainWindow.h include/ContactDialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/Contact.cpp src/ContactManager.cpp src/FileHandler.cpp src/Logger.cpp src/MainWindow.cpp src/ContactDialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp w src/ContactManager.cpp src/FileHandler.cpp src/Logger.cpp src/MainWindow.cpp src/ContactDialog.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -706,16 +713,59 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_MainWindow.cpp
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: resources.qrc \
+		../../../Qt/5.15.19/macos/bin/rcc
+	/Users/a/Qt/5.15.19/macos/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
+
+compiler_moc_header_make_all: moc_MainWindow.cpp moc_ContactDialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_MainWindow.cpp
+	-$(DEL_FILE) moc_MainWindow.cpp moc_ContactDialog.cpp
 moc_MainWindow.cpp: include/MainWindow.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QTableWidget \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qtablewidget.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
+		include/ContactManager.h \
+		src/Contact.cpp \
+		include/Contact.h \
+		include/ContactDialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QFormLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qformlayout.h \
+		include/Logger.h \
 		../../../Qt/5.15.19/macos/bin/moc
 	/Users/a/Qt/5.15.19/macos/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=199711L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=12 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/a/Qt/5.15.19/macos/mkspecs/macx-clang -I/Users/a/Projects/C++/ContactManagmentSystem -I/Users/a/Qt/5.15.19/macos/lib/QtWidgets.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtGui.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/Users/a/Qt/5.15.19/macos/lib include/MainWindow.h -o moc_MainWindow.cpp
+
+moc_ContactDialog.cpp: include/ContactDialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QFormLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qformlayout.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
+		include/Contact.h \
+		include/Logger.h \
+		include/ContactManager.h \
+		src/Contact.cpp \
+		../../../Qt/5.15.19/macos/bin/moc
+	/Users/a/Qt/5.15.19/macos/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=199711L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=12 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/a/Qt/5.15.19/macos/mkspecs/macx-clang -I/Users/a/Projects/C++/ContactManagmentSystem -I/Users/a/Qt/5.15.19/macos/lib/QtWidgets.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtGui.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/Users/a/Qt/5.15.19/macos/lib include/ContactDialog.h -o moc_ContactDialog.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -731,24 +781,49 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_header_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_header_clean 
 
 ####### Compile
 
 main.o: src/main.cpp ../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QApplication \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qapplication.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
 		include/MainWindow.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMainWindow \
-		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmainwindow.h
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QTableWidget \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qtablewidget.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
+		include/ContactManager.h \
+		src/Contact.cpp \
+		include/Contact.h \
+		include/ContactDialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QFormLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qformlayout.h \
+		include/Logger.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o src/main.cpp
 
-Contact.o: src/Contact.cpp include/Contact.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Contact.o src/Contact.cpp
+w.o: w 
+	$(CC) -c $(CFLAGS) $(INCPATH) -o w.o w
 
-ContactManager.o: src/ContactManager.cpp 
+ContactManager.o: src/ContactManager.cpp include/ContactManager.h \
+		src/Contact.cpp \
+		include/Contact.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ContactManager.o src/ContactManager.cpp
 
-FileHandler.o: src/FileHandler.cpp 
+FileHandler.o: src/FileHandler.cpp include/FileHandler.h \
+		include/ContactManager.h \
+		src/Contact.cpp \
+		include/Contact.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FileHandler.o src/FileHandler.cpp
 
 Logger.o: src/Logger.cpp 
@@ -756,14 +831,54 @@ Logger.o: src/Logger.cpp
 
 MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMainWindow \
-		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmainwindow.h
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QTableWidget \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qtablewidget.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
+		include/ContactManager.h \
+		src/Contact.cpp \
+		include/Contact.h \
+		include/ContactDialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QFormLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qformlayout.h \
+		include/Logger.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o src/MainWindow.cpp
 
-ContactDialog.o: src/ContactDialog.cpp 
+ContactDialog.o: src/ContactDialog.cpp include/ContactDialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QFormLayout \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qformlayout.h \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
+		include/Contact.h \
+		include/Logger.h \
+		include/ContactManager.h \
+		src/Contact.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ContactDialog.o src/ContactDialog.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindow.o moc_MainWindow.cpp
+
+moc_ContactDialog.o: moc_ContactDialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_ContactDialog.o moc_ContactDialog.cpp
 
 ####### Install
 

@@ -45,3 +45,4 @@ QMAKE_MAC_SDK.macosx.SDKVersion = 11.1
 QMAKE_MAC_SDK.macosx.Path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk
 QMAKE_XCODE_DEVELOPER_PATH = /Applications/Xcode.app/Contents/Developer
 QMAKE_XCODE_VERSION = 12.4
+QMAKE_LICHECK_TIMESTAMP = "Wed Jun 11"
