@@ -2,6 +2,7 @@
 #define CONTACTDIALOG_H
 
 #include <QDialog>
+#include <QRegularExpression>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QFormLayout>
@@ -31,7 +32,7 @@ private slots:
 
 public:
     // Constructor for adding (no contact) or editing (with contact)
-    ContactDialog(QWidget* parent = nullptr, Contact* contact = nullptr);
+    ContactDialog(QWidget* parent = nullptr, Contact* contact = nullptr, Logger* logger = nullptr);
     // Return entered data
     std::tuple<QString, QString, QString> getContactData() const;
 };

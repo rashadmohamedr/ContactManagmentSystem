@@ -1,3 +1,4 @@
+#pragma once
 #include "include/ContactManager.h"
 #include <iostream>
 #include <fstream>

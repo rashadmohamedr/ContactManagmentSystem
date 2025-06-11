@@ -8,16 +8,16 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     // Initialize logger
-    Logger* logger = Logger::getInstance();
-    logger->logInfo("Application started");
+    Logger *logger = new Logger("ContactManagmentSystem/resources/log.txt");
+    logger->logINFO("Application started");
 
     // Create ContactManager
     std::unique_ptr<ContactManager> manager = std::make_unique<ContactManager>();
     try {
-        manager->loadContacts();
-        logger->logInfo("Contacts loaded successfully");
+        manager->getAllContacts();
+        logger->logINFO("Contacts loaded successfully");
     } catch (const std::exception& e) {
-        logger->logError("Failed to load contacts: " + std::string(e.what()));
+        logger->logERROR("Failed to load contacts: " + std::string(e.what()));
         QMessageBox::warning(nullptr, "Error", "Failed to load contacts. Starting with empty list.");
     }
 
@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
 
     // Start event loop
     int result = app.exec();
-    logger->logInfo("Application closed");
+    logger->logINFO("Application closed");
+    delete logger; // Clean up logger
     return result;
 }

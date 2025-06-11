@@ -5,7 +5,7 @@ using namespace std;
 ContactManager::ContactManager() {
 	curID = 0;
 }
-void ContactManager::addContact(string &name, string &email, string &phone)
+void ContactManager::addContact(const string &name,const string &email,const string &phone)
 {
 	Contact *newContact = new Contact(name, email, phone,curID++);
 	contacts.push_back(newContact);
@@ -46,6 +46,7 @@ Contact ContactManager::searchContact(string query)
 			return **it; 
 		}
 	}
+	return Contact("","","",-1); // Return nullptr if not found
 }
 vector<Contact *> ContactManager::getAllContacts()
 {

@@ -4,7 +4,7 @@ CONFIG += c++17
 
 SOURCES += \
 src/main.cpp \
-src/Contact.cpp w\
+src/Contact.cpp \
 src/ContactManager.cpp \
 src/FileHandler.cpp \
 src/Logger.cpp \
@@ -18,6 +18,3 @@ include/FileHandler.h \
 include/Logger.h \
 include/MainWindow.h \
 include/ContactDialog.h
-
-RESOURCES += \
-resources.qrc

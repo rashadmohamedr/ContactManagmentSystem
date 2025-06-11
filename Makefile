@@ -53,22 +53,20 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = src/main.cpp \
-		w \
+		src/Contact.cpp \
 		src/ContactManager.cpp \
 		src/FileHandler.cpp \
 		src/Logger.cpp \
 		src/MainWindow.cpp \
-		src/ContactDialog.cpp qrc_resources.cpp \
-		moc_MainWindow.cpp \
+		src/ContactDialog.cpp moc_MainWindow.cpp \
 		moc_ContactDialog.cpp
 OBJECTS       = main.o \
-		w.o \
+		Contact.o \
 		ContactManager.o \
 		FileHandler.o \
 		Logger.o \
 		MainWindow.o \
 		ContactDialog.o \
-		qrc_resources.o \
 		moc_MainWindow.o \
 		moc_ContactDialog.o
 DIST          = ../../../Qt/5.15.19/macos/mkspecs/features/spec_pre.prf \
@@ -256,7 +254,7 @@ DIST          = ../../../Qt/5.15.19/macos/mkspecs/features/spec_pre.prf \
 		include/Logger.h \
 		include/MainWindow.h \
 		include/ContactDialog.h src/main.cpp \
-		w \
+		src/Contact.cpp \
 		src/ContactManager.cpp \
 		src/FileHandler.cpp \
 		src/Logger.cpp \
@@ -466,7 +464,6 @@ Makefile: ContactManagementSystem.pro ../../../Qt/5.15.19/macos/mkspecs/macx-cla
 		../../../Qt/5.15.19/macos/mkspecs/features/yacc.prf \
 		../../../Qt/5.15.19/macos/mkspecs/features/lex.prf \
 		ContactManagementSystem.pro \
-		resources.qrc \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl \
 		../../../Qt/5.15.19/macos/lib/QtGui.framework/Resources/QtGui.prl \
 		../../../Qt/5.15.19/macos/lib/QtCore.framework/Resources/QtCore.prl
@@ -651,7 +648,6 @@ Makefile: ContactManagementSystem.pro ../../../Qt/5.15.19/macos/mkspecs/macx-cla
 ../../../Qt/5.15.19/macos/mkspecs/features/yacc.prf:
 ../../../Qt/5.15.19/macos/mkspecs/features/lex.prf:
 ContactManagementSystem.pro:
-resources.qrc:
 ../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl:
 ../../../Qt/5.15.19/macos/lib/QtGui.framework/Resources/QtGui.prl:
 ../../../Qt/5.15.19/macos/lib/QtCore.framework/Resources/QtCore.prl:
@@ -684,9 +680,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents include/Contact.h include/ContactManager.h include/FileHandler.h include/Logger.h include/MainWindow.h include/ContactDialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp w src/ContactManager.cpp src/FileHandler.cpp src/Logger.cpp src/MainWindow.cpp src/ContactDialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/Contact.cpp src/ContactManager.cpp src/FileHandler.cpp src/Logger.cpp src/MainWindow.cpp src/ContactDialog.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -713,13 +708,8 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all: qrc_resources.cpp
+compiler_rcc_make_all:
 compiler_rcc_clean:
-	-$(DEL_FILE) qrc_resources.cpp
-qrc_resources.cpp: resources.qrc \
-		../../../Qt/5.15.19/macos/bin/rcc
-	/Users/a/Qt/5.15.19/macos/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
-
 compiler_moc_header_make_all: moc_MainWindow.cpp moc_ContactDialog.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_MainWindow.cpp moc_ContactDialog.cpp
@@ -738,7 +728,6 @@ moc_MainWindow.cpp: include/MainWindow.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
 		include/ContactManager.h \
-		src/Contact.cpp \
 		include/Contact.h \
 		include/ContactDialog.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
@@ -763,7 +752,6 @@ moc_ContactDialog.cpp: include/ContactDialog.h \
 		include/Contact.h \
 		include/Logger.h \
 		include/ContactManager.h \
-		src/Contact.cpp \
 		../../../Qt/5.15.19/macos/bin/moc
 	/Users/a/Qt/5.15.19/macos/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=199711L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=12 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/a/Qt/5.15.19/macos/mkspecs/macx-clang -I/Users/a/Projects/C++/ContactManagmentSystem -I/Users/a/Qt/5.15.19/macos/lib/QtWidgets.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtGui.framework/Headers -I/Users/a/Qt/5.15.19/macos/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/12.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/Users/a/Qt/5.15.19/macos/lib include/ContactDialog.h -o moc_ContactDialog.cpp
 
@@ -781,7 +769,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_rcc_clean compiler_moc_header_clean 
+compiler_clean: compiler_moc_header_clean 
 
 ####### Compile
 
@@ -802,7 +790,6 @@ main.o: src/main.cpp ../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/Q
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qboxlayout.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
 		include/ContactManager.h \
-		src/Contact.cpp \
 		include/Contact.h \
 		include/ContactDialog.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
@@ -812,17 +799,15 @@ main.o: src/main.cpp ../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/Q
 		include/Logger.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o src/main.cpp
 
-w.o: w 
-	$(CC) -c $(CFLAGS) $(INCPATH) -o w.o w
+Contact.o: src/Contact.cpp include/Contact.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Contact.o src/Contact.cpp
 
 ContactManager.o: src/ContactManager.cpp include/ContactManager.h \
-		src/Contact.cpp \
 		include/Contact.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ContactManager.o src/ContactManager.cpp
 
 FileHandler.o: src/FileHandler.cpp include/FileHandler.h \
 		include/ContactManager.h \
-		src/Contact.cpp \
 		include/Contact.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FileHandler.o src/FileHandler.cpp
 
@@ -844,7 +829,6 @@ MainWindow.o: src/MainWindow.cpp include/MainWindow.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QMessageBox \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
 		include/ContactManager.h \
-		src/Contact.cpp \
 		include/Contact.h \
 		include/ContactDialog.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/QDialog \
@@ -867,12 +851,8 @@ ContactDialog.o: src/ContactDialog.cpp include/ContactDialog.h \
 		../../../Qt/5.15.19/macos/lib/QtWidgets.framework/Headers/qmessagebox.h \
 		include/Contact.h \
 		include/Logger.h \
-		include/ContactManager.h \
-		src/Contact.cpp
+		include/ContactManager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ContactDialog.o src/ContactDialog.cpp
-
-qrc_resources.o: qrc_resources.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindow.o moc_MainWindow.cpp

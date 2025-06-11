@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QHeaderView>
 #include <QTableWidget>
 #include <QPushButton>
 #include <QLineEdit>
@@ -47,7 +48,7 @@ private slots:
 
 public:
     // Constructor takes ContactManager pointer
-    MainWindow(std::unique_ptr<ContactManager> mgr, QWidget* parent = nullptr);
+    MainWindow(std::unique_ptr<ContactManager> mgr, QWidget* parent = nullptr,Logger* logger= nullptr);
     ~MainWindow();
 };
 
